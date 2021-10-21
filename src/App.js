@@ -72,12 +72,12 @@ function App() {
     });
   }, []);
 
-  const palletes = [paletteOne];
+  const palettes = [paletteOne];
 
   return (
     <div className="App">
-      {palletes.map((pallete, i) => (
-        <ElementsFromPallette key={i} pallete={pallete} colors={hexColors} />
+      {palettes.map((palette, i) => (
+        <ElementsFromPalette key={i} palette={palette} colors={hexColors} />
       ))}
       <header className="App-header">
         <img
@@ -109,10 +109,10 @@ function App() {
   );
 }
 
-function ElementsFromPallette({ pallete, colors }) {
+function ElementsFromPalette({ palette, colors }) {
   const { appearance, other } =
     colors.length > 0
-      ? pallete(colors)
+      ? palette(colors)
       : { appearance: {}, other: { pageBackground: "white" } };
 
   const options = {
