@@ -13,14 +13,6 @@ const stripePromise = loadStripe(
 
 const colorThief = new ColorThief();
 
-const CheckoutForm = () => {
-  return (
-    <form>
-      <PaymentElement />
-    </form>
-  );
-};
-
 function App() {
   const initialImage = "/drop-here.jpg";
   const [errorMessage, setErrorMessage] = useState("");
