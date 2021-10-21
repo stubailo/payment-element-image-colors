@@ -12,6 +12,7 @@
     "color-contrast-checker": "^2.1.0",
     "colorthief": "^2.3.2",
     "extract-colors": "^1.1.18",
+    "purecss": "^2.0.6",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",

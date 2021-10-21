@@ -1,27 +1,35 @@
+* {
+  box-sizing: border-box;
+}
+
 .App {
   width: 100%;
 }
 
-.App-header {
-  display: flex;
-  flex-direction: row;
-  margin: 20px auto;
-  align-items: center;
-  justify-items:flex-end;
+.config-ui {
+  background-color: #eee;
 }
 
 .elements-container {
-  width: 500px;
   padding: 50px;
-  margin: 10px auto;
+  width: 500px;
+  margin: 0 auto;
 }
 
-
 img {
-  max-width: 500px;
-  flex: 1;
+  width: 100%;
 }
 
 .colors-container {
   width: 200px;
+}
+
+h2 {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.padded {
+  padding: 24px 12px;
 }

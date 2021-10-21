@@ -2,8 +2,11 @@ import { useCallback, useState, useRef, useEffect } from "react";
 import { Elements, PaymentElement } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import ColorThief from "colorthief";
+import "purecss/build/pure-min.css";
 
 import { paletteOne } from "./palette";
+import { Colors } from "./Colors";
+import { RadioButtonGroup, Button } from "./ButtonGroup";
 
 import "./App.css";
 
@@ -18,7 +21,10 @@ function App() {
   const [errorMessage, setErrorMessage] = useState("");
   const [imageData, setImageData] = useState(initialImage);
   const imageRefContainer = useRef(null);
-  const [hexColors, setHexColors] = useState([]);
+  const [originalColorScheme, setOriginalColorScheme] = useState([]);
+  const [colorSchemeTransformer, setColorSchemeTransformer] = useState([]);
+  const [colorMode, setColorMode] = useState("auto");
+  const [baseTheme, setBaseTheme] = useState("stripe");
 
   const validTypes = ["image/jpeg", "image/png", "image/gif"];
 
@@ -26,12 +32,15 @@ function App() {
     setImageData(imageData);
   }, []);
 
+  const handleRandomizeColors = () => {};
+
   useEffect(() => {
     if (imageData !== initialImage && imageRefContainer.current.src) {
       // wait until image actually renders
-      const colors = colorThief.getPalette(imageRefContainer.current, 5);
+      const colors = colorThief.getPalette(imageRefContainer.current, 7);
       console.log("colors", colors);
-      setHexColors(colors.map((c) => `rgb(${c[0]},${c[1]},${c[2]})`));
+      setOriginalColorScheme(colors.map((c) => `rgb(${c[0]},${c[1]},${c[2]})`));
+      setColorSchemeTransformer([]);
     }
   }, [imageData]);
 
@@ -69,43 +78,87 @@ function App() {
   return (
     <div className="App">
       {palettes.map((palette, i) => (
-        <ElementsFromPalette key={i} palette={palette} colors={hexColors} />
-      ))}
-      <header className="App-header">
-        <img
-          ref={imageRefContainer}
-          src={imageData}
-          className="App-logo"
-          alt="logo"
-          onDragOver={(e) => {
-            e.preventDefault();
-          }}
-          onDrop={handleDrop}
+        <ElementsFromPalette
+          key={i}
+          palette={palette}
+          colors={originalColorScheme}
+          colorMode={colorMode}
+          baseTheme={baseTheme}
         />
-        <div className="colors-container">
-          {hexColors.map((hexColor, i) => (
-            <div
-              key={i}
-              style={{
-                width: "200px",
-                height: "30px",
-                backgroundColor: hexColor,
-              }}
-            >
-              {i} {hexColor}
+      ))}
+      <div className="config-ui">
+        <div className="pure-g">
+          <div className="pure-u-1-4 padded">
+            <h2>Demo images</h2>
+          </div>
+
+          <div className="pure-u-1-2 padded">
+            <h2>Image</h2>
+            <p>Drag to upload your own, or select one on the left</p>
+
+            <div className="pure-g">
+              <div className="pure-u-2-3" style={{ paddingRight: "12px" }}>
+                <img
+                  ref={imageRefContainer}
+                  src={imageData}
+                  className="App-logo"
+                  alt="logo"
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                  }}
+                  onDrop={handleDrop}
+                />
+              </div>
+              <div className="pure-u-1-3">
+                <Colors colors={originalColorScheme} />
+              </div>
             </div>
-          ))}
+          </div>
+
+          <div className="pure-u-1-4 padded">
+            <h2>Config</h2>
+            <p>Color mode</p>
+            <RadioButtonGroup
+              value={colorMode}
+              onChange={setColorMode}
+              options={[
+                { label: "Auto", value: "auto" },
+                { label: "Light mode", value: "light" },
+                { label: "Dark mode", value: "dark" },
+              ]}
+            />
+
+            <p>Base theme</p>
+            <RadioButtonGroup
+              value={baseTheme}
+              onChange={setBaseTheme}
+              options={[
+                { label: "Stripe", value: "stripe" },
+                { label: "Night", value: "night" },
+                { label: "Flat", value: "flat" },
+              ]}
+            />
+
+            <p>Switch it up!</p>
+            <Button onClick={handleRandomizeColors}>Randomize colors</Button>
+          </div>
         </div>
-      </header>
+        <p>
+          Payment Element configuration through color extraction demo by Sashko
+          Stubailo, Oct 2021
+        </p>
+      </div>
     </div>
   );
 }
 
-function ElementsFromPalette({ palette, colors }) {
+function ElementsFromPalette({ palette, colors, colorMode, baseTheme }) {
   const { appearance, other } =
     colors.length > 0
-      ? palette(colors)
+      ? palette(colors, colorMode)
       : { appearance: {}, other: { pageBackground: "white" } };
+
+  appearance.theme = baseTheme;
 
   const options = {
     // passing the client secret obtained from the server
@@ -116,12 +169,14 @@ function ElementsFromPalette({ palette, colors }) {
 
   return (
     <div
-      className="elements-container"
+      className="elements-background"
       style={{ backgroundColor: other.pageBackground }}
     >
-      <Elements stripe={stripePromise} options={options}>
-        <PaymentElement />
-      </Elements>
+      <div className="elements-container">
+        <Elements stripe={stripePromise} options={options}>
+          <PaymentElement />
+        </Elements>
+      </div>
     </div>
   );
 }

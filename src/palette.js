@@ -1,16 +1,21 @@
 import Color from "color";
 
 // Returns variables
-export function paletteOne(colors) {
+export function paletteOne(colors, colorMode) {
   let numDarkColors = 0;
   colors.forEach((c) => {
     console.log(Color(c).hsl().object());
-    if (Color(c).isDark()) {
+    if (Color(c).hsl().object().l < 45) {
       numDarkColors++;
     }
   });
   console.log("numdark", numDarkColors);
-  const darkMode = numDarkColors > colors.length / 2;
+  let darkMode = numDarkColors > colors.length / 2;
+  if (colorMode === "dark") {
+    darkMode = true;
+  } else if (colorMode === "light") {
+    darkMode = false;
+  }
 
   const mutateColors = [...colors];
   const darkestColor = colors.reduce((a, b) =>
@@ -25,11 +30,20 @@ export function paletteOne(colors) {
   const brightestColor = mutateColors.reduce((a, b) =>
     Color(a).hsl().object().s > Color(b).hsl().object().s ? a : b
   );
+  remove(mutateColors, brightestColor);
+
+  const secondBrightestColor = mutateColors.reduce((a, b) =>
+    Color(a).hsl().object().s > Color(b).hsl().object().s ? a : b
+  );
 
   const pageBackground = darkMode ? "black" : "white";
 
   const colorBackground = darkMode ? darkestColor : lightestColor;
   const colorPrimary = contrastize(brightestColor, colorBackground);
+  const colorText = contrastize(
+    darkMode ? lightestColor : darkestColor,
+    pageBackground
+  );
 
   const appearance = {
     theme: "stripe",
@@ -37,19 +51,12 @@ export function paletteOne(colors) {
     variables: {
       colorBackground,
       colorPrimary,
-      colorText: contrastize(
-        darkMode ? lightestColor : darkestColor,
-        pageBackground
-      ),
-      fontFamily: "Ideal Sans, system-ui, sans-serif",
-      spacingUnit: "2px",
-      borderRadius: "4px",
-      // See all possible variables below
+      colorText,
     },
 
     rules: {
       ".Tab": {
-        color: contrastize(colors[3], colorBackground),
+        color: contrastize(secondBrightestColor, colorBackground),
       },
     },
   };
