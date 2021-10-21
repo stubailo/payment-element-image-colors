@@ -1,20 +1,54 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
+import { Elements, PaymentElement } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import ColorThief from "colorthief";
 
-import logo from "./logo.svg";
+import { paletteOne } from "./palette";
+
 import "./App.css";
 
+const stripePromise = loadStripe(
+  "pk_test_51JmkY3IMJjsLxmkR84RlI2s5tIt8eWATgq1nHykamhrOp7hwbue7zQRDVibnk9iXik67STVqANcOQqWwZvkW9q6500xrwvBKXG"
+);
+
+const colorThief = new ColorThief();
+
+const CheckoutForm = () => {
+  return (
+    <form>
+      <PaymentElement />
+    </form>
+  );
+};
+
 function App() {
+  const initialImage = "/drop-here.jpg";
   const [errorMessage, setErrorMessage] = useState("");
-  const [imageData, setImageData] = useState("");
+  const [imageData, setImageData] = useState(initialImage);
+  const imageRefContainer = useRef(null);
+  const [hexColors, setHexColors] = useState([]);
 
   const validTypes = ["image/jpeg", "image/png", "image/gif"];
+
+  const handleImageReady = useCallback((imageData) => {
+    setImageData(imageData);
+  }, []);
+
+  useEffect(() => {
+    if (imageData !== initialImage && imageRefContainer.current.src) {
+      // wait until image actually renders
+      const colors = colorThief.getPalette(imageRefContainer.current, 5);
+      console.log("colors", colors);
+      setHexColors(colors.map((c) => `rgb(${c[0]},${c[1]},${c[2]})`));
+    }
+  }, [imageData]);
 
   const handleDrop = useCallback((event) => {
     event.preventDefault();
 
     const files = event.dataTransfer.files;
 
-    if(!files.length) {
+    if (!files.length) {
       setErrorMessage("no files");
       throw new Error("no files");
     }
@@ -26,42 +60,76 @@ function App() {
       }
 
       const reader = new FileReader();
-      reader.addEventListener('load', () => {
-        setImageData(reader.result);
-      }, false);
+      reader.addEventListener(
+        "load",
+        () => {
+          handleImageReady(reader.result);
+        },
+        false
+      );
 
       reader.readAsDataURL(file);
     });
   }, []);
 
+  const palletes = [paletteOne];
+
   return (
     <div className="App">
+      {palletes.map((pallete, i) => (
+        <ElementsFromPallette key={i} pallete={pallete} colors={hexColors} />
+      ))}
       <header className="App-header">
-        <img src={imageData} className="App-logo" alt="logo" />
-        <p>Error: {errorMessage}</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <div
-          style={{
-            width: "200px",
-            height: "200px",
-            margin: "0 auto",
-            background: "green",
-          }}
+        <img
+          ref={imageRefContainer}
+          src={imageData}
+          className="App-logo"
+          alt="logo"
           onDragOver={(e) => {
             e.preventDefault();
           }}
           onDrop={handleDrop}
-        >
-          Drop image here
+        />
+        <div className="colors-container">
+          {hexColors.map((hexColor, i) => (
+            <div
+              key={i}
+              style={{
+                width: "200px",
+                height: "30px",
+                backgroundColor: hexColor,
+              }}
+            >
+              {i} {hexColor}
+            </div>
+          ))}
         </div>
       </header>
+    </div>
+  );
+}
+
+function ElementsFromPallette({ pallete, colors }) {
+  const { appearance, other } =
+    colors.length > 0
+      ? pallete(colors)
+      : { appearance: {}, other: { pageBackground: "white" } };
+
+  const options = {
+    // passing the client secret obtained from the server
+    clientSecret:
+      "pi_3JmkcKIMJjsLxmkR0TdQ4qVr_secret_1UlXCMDRePvMcnJLCaccNk8Zv",
+    appearance,
+  };
+
+  return (
+    <div
+      className="elements-container"
+      style={{ backgroundColor: other.pageBackground }}
+    >
+      <Elements stripe={stripePromise} options={options}>
+        <PaymentElement />
+      </Elements>
     </div>
   );
 }
