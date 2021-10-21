@@ -22,9 +22,8 @@ function App() {
   const [imageData, setImageData] = useState(initialImage);
   const imageRefContainer = useRef(null);
   const [originalColorScheme, setOriginalColorScheme] = useState([]);
-  const [colorSchemeTransformer, setColorSchemeTransformer] = useState([]);
   const [colorMode, setColorMode] = useState("auto");
-  const [baseTheme, setBaseTheme] = useState("stripe");
+  const [baseTheme, setBaseTheme] = useState("flat");
 
   const validTypes = ["image/jpeg", "image/png", "image/gif"];
 
@@ -32,15 +31,13 @@ function App() {
     setImageData(imageData);
   }, []);
 
-  const handleRandomizeColors = () => {};
-
   useEffect(() => {
     if (imageData !== initialImage && imageRefContainer.current.src) {
       // wait until image actually renders
       const colors = colorThief.getPalette(imageRefContainer.current, 7);
       console.log("colors", colors);
-      setOriginalColorScheme(colors.map((c) => `rgb(${c[0]},${c[1]},${c[2]})`));
-      setColorSchemeTransformer([]);
+      const colorScheme = colors.map((c) => `rgb(${c[0]},${c[1]},${c[2]})`);
+      setOriginalColorScheme(colorScheme);
     }
   }, [imageData]);
 
@@ -90,6 +87,42 @@ function App() {
         <div className="pure-g">
           <div className="pure-u-1-4 padded">
             <h2>Demo images</h2>
+            <div className="pure-g">
+              <div className="pure-u-1-2">
+                A Photo by{" "}
+                <a href="https://unsplash.com/@memory_terra?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
+                  Alex Diaz
+                </a>{" "}
+                on{" "}
+                <a href="https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
+                  Unsplash
+                </a>
+              </div>
+              <div className="pure-u-1-2">
+                Photo by{" "}
+                <a href="https://unsplash.com/@dancristianp?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
+                  Dan-Cristian Pădureț
+                </a>{" "}
+                on{" "}
+                <a href="https://unsplash.com/s/photos/colorful?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
+                  Unsplash
+                </a>
+              </div>
+            </div>
+            <div className="pure-g">
+              <div className="pure-u-1-2">
+                Photo by{" "}
+                <a href="https://unsplash.com/@mrrrk_smith?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
+                  John-Mark Smith
+                </a>{" "}
+                on{" "}
+                <a href="https://unsplash.com/s/photos/colorful?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
+                  Unsplash
+                </a>
+                <img src="https://images.unsplash.com/photo-1488928741225-2aaf732c96cc?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2670&q=80" />
+              </div>
+              <div className="pure-u-1-2">D</div>
+            </div>
           </div>
 
           <div className="pure-u-1-2 padded">
@@ -133,14 +166,11 @@ function App() {
               value={baseTheme}
               onChange={setBaseTheme}
               options={[
+                { label: "Flat", value: "flat" },
                 { label: "Stripe", value: "stripe" },
                 { label: "Night", value: "night" },
-                { label: "Flat", value: "flat" },
               ]}
             />
-
-            <p>Switch it up!</p>
-            <Button onClick={handleRandomizeColors}>Randomize colors</Button>
           </div>
         </div>
         <p>

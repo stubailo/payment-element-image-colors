@@ -18,14 +18,6 @@ export function paletteOne(colors, colorMode) {
   }
 
   const mutateColors = [...colors];
-  const darkestColor = colors.reduce((a, b) =>
-    Color(a).hsl().object().l < Color(b).hsl().object().l ? a : b
-  );
-  remove(mutateColors, darkestColor);
-  const lightestColor = mutateColors.reduce((a, b) =>
-    Color(a).hsl().object().l > Color(b).hsl().object().l ? a : b
-  );
-  remove(mutateColors, lightestColor);
 
   const brightestColor = mutateColors.reduce((a, b) =>
     Color(a).hsl().object().s > Color(b).hsl().object().s ? a : b
@@ -35,14 +27,43 @@ export function paletteOne(colors, colorMode) {
   const secondBrightestColor = mutateColors.reduce((a, b) =>
     Color(a).hsl().object().s > Color(b).hsl().object().s ? a : b
   );
+  remove(mutateColors, secondBrightestColor);
+
+  const lightestColor = mutateColors.reduce((a, b) =>
+    Color(a).hsl().object().l > Color(b).hsl().object().l ? a : b
+  );
+  remove(mutateColors, lightestColor);
+
+  const secondLightestColor = mutateColors.reduce((a, b) =>
+    Color(a).hsl().object().l > Color(b).hsl().object().l ? a : b
+  );
+  remove(mutateColors, secondLightestColor);
+
+  const darkestColor = mutateColors.reduce((a, b) =>
+    Color(a).hsl().object().l < Color(b).hsl().object().l ? a : b
+  );
+  remove(mutateColors, darkestColor);
+
+  const secondDarkestColor = mutateColors.reduce((a, b) =>
+    Color(a).hsl().object().l < Color(b).hsl().object().l ? a : b
+  );
+  remove(mutateColors, secondDarkestColor);
 
   const pageBackground = darkMode ? "black" : "white";
 
   const colorBackground = darkMode ? darkestColor : lightestColor;
-  const colorPrimary = contrastize(brightestColor, colorBackground);
+  const colorBackgroundTab = darkMode
+    ? secondDarkestColor
+    : secondLightestColor;
+
+  const colorPrimary = contrastize(brightestColor, colorBackgroundTab);
   const colorText = contrastize(
     darkMode ? lightestColor : darkestColor,
     pageBackground
+  );
+  const colorTextTab = contrastize(
+    darkMode ? secondLightestColor : secondDarkestColor,
+    colorBackgroundTab
   );
 
   const appearance = {
@@ -56,7 +77,8 @@ export function paletteOne(colors, colorMode) {
 
     rules: {
       ".Tab": {
-        color: contrastize(secondBrightestColor, colorBackground),
+        color: colorTextTab,
+        backgroundColor: colorBackgroundTab,
       },
     },
   };
@@ -72,16 +94,17 @@ function contrastize(foreground, background) {
   let fg = Color(foreground);
   const bg = Color(background);
 
+  const maxIter = 20;
   let iterations = 0;
   if (bg.isDark()) {
     // need 4.5 contrast
-    while (fg.contrast(bg) < 4.5 && iterations < 5) {
+    while (fg.contrast(bg) < 4.5 && iterations < maxIter) {
       fg = fg.lighten(0.1);
       iterations++;
     }
   } else if (bg.isLight()) {
     // need 4.5 contrast
-    while (fg.contrast(bg) < 4.5 && iterations < 5) {
+    while (fg.contrast(bg) < 4.5 && iterations < maxIter) {
       fg = fg.darken(0.1);
       iterations++;
     }
