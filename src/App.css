@@ -33,3 +33,23 @@ h2 {
 .padded {
   padding: 24px 12px;
 }
+
+.unsplash-image-caption {
+  font-size: 10px;
+  color: black;
+}
+
+.unsplash-image-caption a {
+  font-size: 10px;
+  color: black;
+}
+
+.thumb {
+  max-height: 80px;
+  max-width: 100%;
+  cursor: pointer;
+}
+
+.padding-right-thumb {
+  padding-right: 4px;
+}

@@ -88,46 +88,71 @@ function App() {
           <div className="pure-u-1-4 padded">
             <h2>Demo images</h2>
             <div className="pure-g">
-              <div className="pure-u-1-2">
-                A Photo by{" "}
-                <a href="https://unsplash.com/@memory_terra?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
-                  Alex Diaz
-                </a>{" "}
-                on{" "}
-                <a href="https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
-                  Unsplash
-                </a>
+              <div className="pure-u-1-2 padding-right-thumb">
+                <p className="unsplash-image-caption">
+                  <a href="https://unsplash.com/@memory_terra">Alex Diaz</a>
+                </p>
+
+                <img
+                  className="thumb"
+                  src="/alex-diaz.jpg"
+                  alt="Straight highway with a forest on both sides, in the fall."
+                  onClick={() => {
+                    setImageData("/alex-diaz.jpg");
+                  }}
+                />
               </div>
-              <div className="pure-u-1-2">
-                Photo by{" "}
-                <a href="https://unsplash.com/@dancristianp?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
-                  Dan-Cristian Pădureț
-                </a>{" "}
-                on{" "}
-                <a href="https://unsplash.com/s/photos/colorful?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
-                  Unsplash
-                </a>
+              <div className="pure-u-1-2 padding-right-thumb">
+                <p className="unsplash-image-caption">
+                  <a href="https://unsplash.com/@dancristianp">
+                    Dan-Cristian Pădureț
+                  </a>
+                </p>
+                <img
+                  className="thumb"
+                  src="/dan-cristian-paduret.jpg"
+                  alt="Abstract pattern of several different paint colors swirling around."
+                  onClick={() => {
+                    setImageData("/dan-cristian-paduret.jpg");
+                  }}
+                />
               </div>
             </div>
             <div className="pure-g">
-              <div className="pure-u-1-2">
-                Photo by{" "}
-                <a href="https://unsplash.com/@mrrrk_smith?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
-                  John-Mark Smith
-                </a>{" "}
-                on{" "}
-                <a href="https://unsplash.com/s/photos/colorful?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">
-                  Unsplash
-                </a>
-                <img src="https://images.unsplash.com/photo-1488928741225-2aaf732c96cc?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2670&q=80" />
+              <div className="pure-u-1-2 padding-right-thumb">
+                <p className="unsplash-image-caption">
+                  <a href="https://unsplash.com/@mrrrk_smith">
+                    John-Mark Smith
+                  </a>
+                </p>
+                <img
+                  className="thumb"
+                  src="/john-mark-smith.jpg"
+                  alt="Close-up of a field of tulips."
+                  onClick={() => {
+                    setImageData("/john-mark-smith.jpg");
+                  }}
+                />
               </div>
-              <div className="pure-u-1-2">D</div>
+              <div className="pure-u-1-2 padding-right-thumb">
+                <p className="unsplash-image-caption">
+                  <a href="https://unsplash.com/@7bbbailey">Barth Bailey</a>
+                </p>
+                <img
+                  className="thumb"
+                  src="/barth-bailey.jpg"
+                  alt="Bryce Canyon with orange rocks."
+                  onClick={() => {
+                    setImageData("/barth-bailey.jpg");
+                  }}
+                />
+              </div>
             </div>
           </div>
 
           <div className="pure-u-1-2 padded">
             <h2>Image</h2>
-            <p>Drag to upload your own, or select one on the left</p>
+            <p>Drag to upload your own, or click one on the left</p>
 
             <div className="pure-g">
               <div className="pure-u-2-3" style={{ paddingRight: "12px" }}>
@@ -174,8 +199,11 @@ function App() {
           </div>
         </div>
         <p>
-          Payment Element configuration through color extraction demo by Sashko
-          Stubailo, Oct 2021
+          Payment Element configuration through color extraction demo
+          <br />
+          Sashko Stubailo, Oct 2021
+          <br />
+          See the code on GitHub
         </p>
       </div>
     </div>
