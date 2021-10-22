@@ -6,7 +6,7 @@ import "purecss/build/pure-min.css";
 
 import { paletteOne } from "./palette";
 import { Colors } from "./Colors";
-import { RadioButtonGroup, Button } from "./ButtonGroup";
+import { RadioButtonGroup } from "./ButtonGroup";
 
 import "./App.css";
 
@@ -18,7 +18,6 @@ const colorThief = new ColorThief();
 
 function App() {
   const initialImage = "/drop-here.jpg";
-  const [errorMessage, setErrorMessage] = useState("");
   const [imageData, setImageData] = useState(initialImage);
   const imageRefContainer = useRef(null);
   const [originalColorScheme, setOriginalColorScheme] = useState([]);
@@ -47,13 +46,11 @@ function App() {
     const files = event.dataTransfer.files;
 
     if (!files.length) {
-      setErrorMessage("no files");
       throw new Error("no files");
     }
 
     [...files].forEach((file) => {
       if (!validTypes.includes(file.type)) {
-        setErrorMessage("not an image!");
         throw new Error("not an image");
       }
 
@@ -68,6 +65,7 @@ function App() {
 
       reader.readAsDataURL(file);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const palettes = [paletteOne];
